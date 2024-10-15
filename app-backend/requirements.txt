@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+python-multipart
+librosa
+soundfile
+noisereduce
+pydub
+sqlalchemy
+psycopg2-binary
+# tensorflow
+google-cloud-speech
+google-cloud-storage

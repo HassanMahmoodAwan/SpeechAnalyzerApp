@@ -72,7 +72,7 @@ async def upload_audio(db: db_dependency, InputfileName = Form(...)):
     
     
     translated_transcript = transcriptEnchancer(transcript, client)
-    print("Transcript Enchancer")
+    print("Roman Urdu Translator")
     
     diarized_Transcript = diarization_audio(translated_transcript, client)
     print("Dialog-flowTranscript")  

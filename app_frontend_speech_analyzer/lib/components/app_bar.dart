@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:app_frontend_speech_analyzer/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -16,24 +17,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
         leading: ModalRoute.of(context)?.settings.name != '/'
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  // Navigate to the homepage with reload
-                  Navigator.pushReplacementNamed(context, '/').then((_) {
-                    setState(() {}); // Trigger a rebuild when returning
-                  });
+            ? GestureDetector(
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/',
+                    (Route<dynamic> route) => false,
+                  );
                 },
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                  onPressed: null,
+                ),
               )
-            : null, // No leading icon on the homepage
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
+            : null,
         toolbarHeight: 70,
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 4, 39, 91),
         title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

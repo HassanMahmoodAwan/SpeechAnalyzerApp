@@ -4,7 +4,7 @@ def sentimentAnalysis(transcript:str, client:any):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": """You are a sentiment analyzer model. Analyze the following text. Analyze it and provide me the sentiment which are: [ positive, negative, neutral ] with their percentage.  First with the highest percentage and then with the second highest percentage. Only provide the name and percentage of sentiment in a dictionary || JSON. No any other text. 
+            {"role": "system", "content": """You are a sentiment analyzer model. Analyze the following text. Analyze it and provide me the sentiment which are: [ positive, negative, neutral ] with their percentage.  First with the highest percentage and then with the second highest percentage. Only provide the name and percentage of sentiment in a dictionary || JSON. No any other text or word. 
              Here are some Examples, 
              
              Transcript: ایک کسٹمر اپنے کریڈٹ کارڈ کے بارے میں معلومات حاصل کر رہا تھا۔ بینک نمائندے نے دو طرح کے کریڈٹ کارڈز، گولڈ اور پلیٹینم کے بارے میں بتایا، جن میں فیس اور کم از کم تنخواہ کے تقاضے شامل ہیں۔ گولڈ کارڈ کی فیس 2500 روپے اور پلیٹینم کارڈ کی فیس 5000 روپے ہوتی ہے۔ کسٹمر کو بتایا گیا کہ پلیٹینم کارڈ کے لیے زیادہ فوائد ہیں اور اس کی حد زیادہ ہوتی ہے۔ نمائندے نے درخواست کے عمل اور تنخواہ کی ضروریات کو بھی واضح کیا۔
@@ -17,7 +17,7 @@ def sentimentAnalysis(transcript:str, client:any):
              Sentiment: {'positive':90, 'neutral':10, 'negative':0}
              
              
-             Ensure the result dictionary should not have any other word like json at the start of provided string, as I need to use it at frontend so format should be exact same. Thanks GPT"""},
+             Ensure the result dictionary should not have any other word like json, sentiment at the start of provided string, as I need to use it at frontend so format should be exact same. Thanks GPT"""},
             {"role": "user", "content": transcript}
             
         ]
@@ -80,7 +80,7 @@ def emotionAnalysis(transcript: str, client: any, sentiment: dict):
         messages=[
             {
                 "role": "system",
-                "content": f"""You are an emotion analyzer model. Analyze the following text. Analyze it and provide me the emotion. Emotion should be three of the following: [ happy, sad, angry, fear, surprise, neutral, frustrated ]. The Sentiment of the following Input Transcript is {sentiment}. Only provide name and percentage of each emotion just in dictionary form. No other text. 
+                "content": f"""You are an emotion analyzer model. Analyze the following text. Analyze it and provide me the emotion. Emotion should be three of the following: [ happy, sad, angry, fear, surprise, neutral, frustrated ]. The Sentiment of the following Input Transcript is {sentiment}. Only provide name and percentage of each emotion just in dictionary form. No other text or word. 
                 
                 Here are some Examples:
 
@@ -96,7 +96,7 @@ def emotionAnalysis(transcript: str, client: any, sentiment: dict):
                 Transcript: The project deadline was pushed back, but I don’t mind. It gives me more time to work on it.
                 Emotion: {{'neutral': 60, 'happy': 25, 'joy': 15}}
                 
-                Ensure the result dictionary does not contain any additional words like "json" at the start. The format must be exact as this is needed for frontend use. Thanks GPT
+                Ensure the result dictionary does not contain any additional words like "json", "emotion" at the start. The format must be exact as this is needed for frontend use. Thanks GPT
                 """
             },
             {"role": "user", "content": transcript}

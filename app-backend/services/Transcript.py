@@ -176,7 +176,7 @@ def diarization_audio(transcript:str, client:any):
 # ==== Summarization using OpenAI-O1 MODEL =====
 def summarize_Transcript_o1(transcript:str, client:any):
     
-    summaryPrompt = f"""You are a transcript summarizer. Summarize the following transcript in the same language as the input, and correct any spelling mistakes. Provide a concise and accurate summary in a single paragraph, without including the word 'summary' in the text.
+    summaryPrompt = f"""You are a transcript summarizer. Summarize the following transcript in the same language as the input, and correct any spelling mistakes. Provide a concise and accurate summary in a single paragraph, without including the word 'summary' in the text. Also donot mention name of persons, instead use customer or company representative as this transcript is between customer and company.
 
     For example, your output should look like this:
 

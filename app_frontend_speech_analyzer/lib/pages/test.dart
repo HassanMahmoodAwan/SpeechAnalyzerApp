@@ -15,7 +15,7 @@ class Testing extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage(),
+        home: TestPage(),
         title: "ABL Muawin",
         routes: {
           '/fileupload': (context) => FileUploadPage(),
@@ -34,12 +34,12 @@ class Testing extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
+class TestPage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<TestPage> {
   bool _isLoading = true;
   List<dynamic> _data = [];
   List<dynamic> _filteredData = [];

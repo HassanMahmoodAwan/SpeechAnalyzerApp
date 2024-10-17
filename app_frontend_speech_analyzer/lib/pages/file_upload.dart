@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, prefer_const_literals_to_create_immutables
-
 import 'package:app_frontend_speech_analyzer/components/app_bar.dart';
 import 'package:app_frontend_speech_analyzer/components/folder_upload.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
   int length = 0;
   bool loadingDone = false;
   String filName = '';
-  String? errorMessage;
+  String? errorMsg;
 
   void showCustomToast(BuildContext context, String msg, Icon showIcon) {
     OverlayEntry overlayEntry = OverlayEntry(
@@ -29,11 +27,12 @@ class _FileUploadPageState extends State<FileUploadPage> {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   blurRadius: 10.0,
@@ -45,10 +44,10 @@ class _FileUploadPageState extends State<FileUploadPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 showIcon,
-                SizedBox(width: 12.0),
+                const SizedBox(width: 12.0),
                 Text(
                   msg,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
               ],
             ),
@@ -59,7 +58,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
 
     Overlay.of(context).insert(overlayEntry);
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       overlayEntry.remove();
     });
   }
@@ -87,7 +86,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
           filName = fileName;
           _isLoading = true;
           counter++;
-          errorMessage = null;
+          errorMsg = null;
         });
 
         final response = await http.post(uri,
@@ -100,27 +99,26 @@ class _FileUploadPageState extends State<FileUploadPage> {
               _isLoading = false;
               loadingDone = true;
               showCustomToast(context, 'All Files Processed Successfully',
-                  Icon(Icons.check_circle, color: Colors.green));
+                  const Icon(Icons.check_circle, color: Colors.green));
             });
             break;
           }
         } else {
           setState(() {
             _isLoading = false;
-            errorMessage =
+            errorMsg =
                 "Error fetching data: (server Error: ${response.statusCode})";
             showCustomToast(context, 'Error Fetching Data.',
-                Icon(Icons.error, color: Colors.red));
+                const Icon(Icons.error, color: Colors.red));
           });
         }
       }
     } catch (e) {
-      print("Error fetching data: $e");
       setState(() {
         _isLoading = false;
-        errorMessage = "Error Fetching Data. (Server Error)";
+        errorMsg = "Error Fetching Data. (Server Error)";
         showCustomToast(context, 'Error Fetching Data. (Server Error)',
-            Icon(Icons.error, color: Colors.red));
+            const Icon(Icons.error, color: Colors.red));
       });
     }
   }
@@ -135,18 +133,18 @@ class _FileUploadPageState extends State<FileUploadPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double threshold = 900;
     return Scaffold(
-      appBar: PreferredSize(
+      appBar: const PreferredSize(
           preferredSize: Size.fromHeight(70),
           child: CustomAppBar(title: "", userMsg: '')),
       body: Container(
         color: const Color.fromARGB(255, 251, 253, 255),
         child: ListView(
-          padding: EdgeInsets.only(bottom: 50),
+          padding: const EdgeInsets.only(bottom: 50),
           children: [
-            SizedBox(height: 70), // Add some spacing
+            const SizedBox(height: 70), // Add some spacing
             // ==== File Upload ======
             FolderUploadComponent(onUploadStatusChanged: _handleUploadStatus),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // ==== Progress Bar =====
 
             Align(
@@ -154,12 +152,13 @@ class _FileUploadPageState extends State<FileUploadPage> {
               child: Column(
                 children: [
                   // Error Message
-                  errorMessage != null
-                      ? Text(errorMessage!,
-                          style: TextStyle(fontSize: 15, color: Colors.red))
-                      : Text(""),
+                  errorMsg != null
+                      ? Text(errorMsg!,
+                          style:
+                              const TextStyle(fontSize: 15, color: Colors.red))
+                      : const Text(""),
 
-                  // Progress Bar
+                  // ===== Progress Bar ======
                   Container(
                       width: screenWidth > threshold
                           ? MediaQuery.of(context).size.width * 0.73
@@ -178,15 +177,15 @@ class _FileUploadPageState extends State<FileUploadPage> {
                                 if (filName.isNotEmpty)
                                   TextSpan(
                                       text: filName.toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white, fontSize: 16))
                                 else
-                                  TextSpan(
+                                  const TextSpan(
                                       text: "No File in Progress",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16)),
 
-                                WidgetSpan(
+                                const WidgetSpan(
                                     child: SizedBox(
                                   width: 14,
                                 )),
@@ -195,22 +194,22 @@ class _FileUploadPageState extends State<FileUploadPage> {
                                 if (counter > 0)
                                   TextSpan(
                                       text: "$counter / $length",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white, fontSize: 15))
                                 else
-                                  TextSpan(
+                                  const TextSpan(
                                       text: "",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15)),
                               ])),
                               if (_isLoading == true)
-                                Center(
+                                const Center(
                                     child: CircularProgressIndicator(
                                   color: Colors.white,
                                   strokeWidth: 1.8,
                                 ))
                               else if (loadingDone)
-                                Row(
+                                const Row(
                                   children: [
                                     Icon(
                                       Icons.check_circle,
@@ -229,7 +228,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
                                   ],
                                 )
                               else
-                                Text(""),
+                                const Text(""),
                             ]),
                       )),
                 ],

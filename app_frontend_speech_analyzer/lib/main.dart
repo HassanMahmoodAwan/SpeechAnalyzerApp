@@ -2,6 +2,7 @@
 
 import 'package:app_frontend_speech_analyzer/pages/analysis.dart';
 import 'package:app_frontend_speech_analyzer/pages/file_upload.dart';
+import 'package:app_frontend_speech_analyzer/pages/home_page.dart';
 import 'package:app_frontend_speech_analyzer/pages/test.dart';
 import 'package:app_frontend_speech_analyzer/utils/theme.dart';
 import 'package:flutter/material.dart';

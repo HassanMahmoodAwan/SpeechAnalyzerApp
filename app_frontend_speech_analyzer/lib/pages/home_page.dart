@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,9 +16,10 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> _filteredData = [];
   String _searchQuery = "";
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  String? errorMsg;
 
   // Function to filter the data based on the search query
-  void searchTableResults(String keyword) {
+  void searchInTable(String keyword) {
     if (keyword.isEmpty) {
       setState(() {
         _filteredData = _data;
@@ -61,6 +64,7 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         setState(() {
+          errorMsg = null;
           final List<dynamic> jsonResponse =
               json.decode(utf8.decode(response.bodyBytes));
           _data = jsonResponse;
@@ -69,12 +73,12 @@ class _HomePageState extends State<HomePage> {
         });
       } else {
         setState(() {
-          print("No data fetched");
+          errorMsg = "No data is fetched";
           _isLoading = false;
         });
       }
     } catch (e) {
-      print("Error fetching data: $e");
+      errorMsg = "Error fetching data (Server Error)";
       setState(() {
         _isLoading = false;
       });
@@ -90,32 +94,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double threshold = 900;
+    double screenThreshold = 900;
     return Scaffold(
-      appBar: PreferredSize(
+      appBar: const PreferredSize(
           preferredSize: Size.fromHeight(70),
           child: CustomAppBar(title: "", userMsg: "Welcome!  Hassan  Mahmood")),
       body: Container(
         color: const Color.fromARGB(255, 251, 253, 255),
         child: ListView(
-          padding: EdgeInsets.only(bottom: 50),
+          padding: const EdgeInsets.only(bottom: 50),
           children: [
-            SizedBox(height: 45),
+            const SizedBox(height: 45),
             if (_isLoading)
-              Center(child: CircularProgressIndicator())
+              const Center(child: CircularProgressIndicator())
             else
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  width: screenWidth > threshold
+                  width: screenWidth > screenThreshold
                       ? MediaQuery.of(context).size.width * 0.89
                       : MediaQuery.of(context).size.width * 0.96,
 
                   // ======== Data Table ========
                   child: DataTableTheme(
-                    data: DataTableThemeData(
+                    data: const DataTableThemeData(
                       dataRowColor: WidgetStatePropertyAll(
-                          const Color.fromARGB(255, 247, 247, 247)),
+                          Color.fromARGB(255, 247, 247, 247)),
                     ),
                     child: PaginatedDataTable(
                       // ===== Heading + Search Query ================
@@ -124,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               "Available Call Records",
                               style: TextStyle(
                                 fontSize: 18,
@@ -138,8 +142,8 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.pushNamed(context, '/fileupload');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 13),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 13),
                                       iconColor: Colors.white,
                                       backgroundColor:
                                           const Color.fromARGB(255, 4, 39, 91),
@@ -147,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(6))),
-                                  child: Row(
+                                  child: const Row(
                                     children: [
                                       Icon(
                                         Icons.add,
@@ -159,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 7),
+                                const SizedBox(width: 7),
                                 // ==== Search Bar ====
                                 SizedBox(
                                   width: 177,
@@ -168,19 +172,20 @@ class _HomePageState extends State<HomePage> {
                                       onChanged: (value) {
                                         setState(() {
                                           _searchQuery = value;
-                                          searchTableResults(_searchQuery);
+                                          searchInTable(_searchQuery);
                                         });
                                       },
                                       decoration: InputDecoration(
                                         hintText: " Search Record...",
-                                        hintStyle: TextStyle(
+                                        hintStyle: const TextStyle(
                                             color: Colors.grey, fontSize: 13),
-                                        prefixIcon: Icon(Icons.search),
+                                        prefixIcon: const Icon(Icons.search),
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(6)),
                                         contentPadding:
-                                            EdgeInsets.symmetric(vertical: 3),
+                                            const EdgeInsets.symmetric(
+                                                vertical: 3),
                                       )),
                                 ),
                                 // ====================
@@ -198,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth: MediaQuery.of(context).size.width *
                                     0.05), // Set max width for content
-                            child: Text("File ID",
+                            child: const Text("File ID",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -210,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.12),
-                            child: Text("File Name",
+                            child: const Text("File Name",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -222,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.10),
-                            child: Text("Creation Time",
+                            child: const Text("Creation Time",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -234,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.10),
-                            child: Text("Time Duration",
+                            child: const Text("Time Duration",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -246,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.14),
-                            child: Text("Sentiment Analysis",
+                            child: const Text("Sentiment Analysis",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -258,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.14),
-                            child: Text("Emotion Analysis",
+                            child: const Text("Emotion Analysis",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -270,7 +275,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.12),
-                            child: Text("Category",
+                            child: const Text("Category",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -282,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                             constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width * 0.09),
-                            child: Text("Show Analysis",
+                            child: const Text("Show Analysis",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -291,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                       source: _DataTableSource(_filteredData, context),
-                      actions: [],
+
                       rowsPerPage: _rowsPerPage,
                       onRowsPerPageChanged: (value) {
                         setState(() {
@@ -302,8 +307,8 @@ class _HomePageState extends State<HomePage> {
                       dataRowHeight: 100,
                       showEmptyRows: false,
                       arrowHeadColor: Colors.blue[700],
-                      headingRowColor: MaterialStateProperty.all(
-                          Color.fromARGB(255, 4, 39, 91)),
+                      headingRowColor: WidgetStateProperty.all(
+                          const Color.fromARGB(255, 4, 39, 91)),
                     ),
                   ),
                 ),
@@ -330,45 +335,45 @@ class _DataTableSource extends DataTableSource {
       cells: [
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 80),
+            constraints: const BoxConstraints(maxWidth: 80),
             child: Text("0${record['id'].toString()}"),
           ),
         ),
         DataCell(
           Container(
-            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            constraints: BoxConstraints(maxWidth: 128),
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+            constraints: const BoxConstraints(maxWidth: 128),
             child: Text(record['filename']),
           ),
         ),
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 100),
+            constraints: const BoxConstraints(maxWidth: 100),
             child: Text(
                 "${record['file_duration'].split(" ").length >= 2 ? record['file_duration'].split(" ")[1] : " "}\n${record['file_duration'].split(" ").length >= 3 ? record['file_duration'].split(" ")[2] : " "}"),
           ),
         ),
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 100),
+            constraints: const BoxConstraints(maxWidth: 100),
             child: Text("${record['file_duration'].split(" ")[0]} mins"),
           ),
         ),
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 175),
+            constraints: const BoxConstraints(maxWidth: 175),
             child: Text(analysisFormat(record['sentiment'].toString()).trim()),
           ),
         ),
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 175),
+            constraints: const BoxConstraints(maxWidth: 175),
             child: Text(analysisFormat(record['emotion'].toString()).trim()),
           ),
         ),
         DataCell(
           Container(
-            constraints: BoxConstraints(maxWidth: 170),
+            constraints: const BoxConstraints(maxWidth: 170),
             child: Text(record['category'].toString().trim()),
           ),
         ),
@@ -380,7 +385,7 @@ class _DataTableSource extends DataTableSource {
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Container(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   maxWidth: 140,
                 ),
                 alignment: Alignment.centerLeft,
@@ -424,7 +429,6 @@ String analysisFormat(var input) {
       resultString += '$key: $value\n';
     });
   } catch (e) {
-    print("Error parsing JSON: $e");
     resultString = "Error parsing data"; // Handle JSON parsing errors
   }
 

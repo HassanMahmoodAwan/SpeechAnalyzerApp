@@ -4,10 +4,10 @@ import 'dart:convert';
 
 // ignore: must_be_immutable
 class Piechart extends StatelessWidget {
-  String title = "sentiment";
-  bool flag = false;
+  String? title;
+  bool flag;
   Color legendColor;
-  String data = "";
+  String data;
   Map<String, double> dataMap = {};
 
   Piechart(
@@ -16,11 +16,21 @@ class Piechart extends StatelessWidget {
     jsonConverter();
   }
 
-  Map<String, double> dataMaps = {
-    "Neutral": 10.0,
-    "Positive": 13.1,
-    "Negative": 50.7,
+  Map<String, double> dataMaps = {};
+
+  Map<String, Color> tagColors = {
+    "neutral": const Color(0xff3398F6),
+    "negative": const Color.fromARGB(255, 217, 4, 4),
+    "positive": const Color.fromARGB(255, 0, 221, 118),
+    "happy": const Color.fromARGB(255, 0, 221, 118),
+    "surprise": const Color.fromARGB(255, 247, 255, 7),
+    "joy": const Color.fromARGB(255, 8, 251, 190),
+    "fear": const Color.fromARGB(255, 217, 4, 4),
+    "frustrated": const Color.fromARGB(255, 255, 85, 0),
+    "sad": const Color.fromARGB(255, 255, 107, 21),
+    "angry": const Color.fromARGB(255, 255, 132, 0),
   };
+  List<Color> colorList = [];
 
   void jsonConverter() {
     try {
@@ -32,15 +42,14 @@ class Piechart extends StatelessWidget {
     } catch (e) {
       print("Error parsing JSON: $e"); // Handle parsing errors
     }
-    print(dataMap);
-  }
 
-  List<Color> colorList = [
-    const Color(0xff3398F6),
-    const Color.fromARGB(255, 217, 4, 4),
-    const Color.fromARGB(255, 0, 221, 118),
-    const Color.fromARGB(255, 233, 103, 11),
-  ];
+    dataMap.forEach((key, value) {
+      if (tagColors.containsKey(key.toLowerCase())) {
+        colorList.add(tagColors[key.toLowerCase()]!);
+      }
+    });
+    colorList.add(const Color.fromARGB(255, 8, 96, 238));
+  }
 
   @override
   Widget build(BuildContext context) {

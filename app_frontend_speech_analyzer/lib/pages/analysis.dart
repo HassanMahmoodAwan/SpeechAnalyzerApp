@@ -256,11 +256,11 @@ class _SpeechDetailState extends State<SpeechDetail> {
                         // ====== Summary Container ======
                         Container(
                           padding: screenWidth > threshold
-                              ? EdgeInsets.fromLTRB(100, 0, 100, 12)
-                              : EdgeInsets.fromLTRB(30, 0, 30, 12),
+                              ? EdgeInsets.fromLTRB(70, 25, 70, 25)
+                              : EdgeInsets.fromLTRB(30, 20, 30, 15),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: const Color.fromARGB(255, 251, 253, 255),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: const Color.fromARGB(255, 58, 58, 58),

@@ -2,14 +2,30 @@
 
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   final String title;
   final String userMsg;
   const CustomAppBar({super.key, required this.title, required this.userMsg});
 
   @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  @override
   Widget build(BuildContext context) {
     return AppBar(
+        leading: ModalRoute.of(context)?.settings.name != '/'
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  // Navigate to the homepage with reload
+                  Navigator.pushReplacementNamed(context, '/').then((_) {
+                    setState(() {}); // Trigger a rebuild when returning
+                  });
+                },
+              )
+            : null, // No leading icon on the homepage
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
@@ -55,7 +71,7 @@ class CustomAppBar extends StatelessWidget {
 
               //  Right-Side Text
               Text(
-                userMsg,
+                widget.userMsg,
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 13,

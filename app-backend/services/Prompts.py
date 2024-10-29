@@ -51,7 +51,7 @@ Ensure the dictionary contains no extra text. Only output the dictionary to fit 
 
 
 
-def analysis_Emotions(sentiments) -> str:
+def analysis_Emotions(sentiment) -> str:
     return f"""You are an emotion analyzer model. Analyze the following text. Analyze it and provide me the emotion. Emotion should be three of the following: [ happy, sad, angry, fear, surprise, neutral, frustrated ]. The Sentiment of the following Input Transcript is {sentiment}. Only provide name and percentage of each emotion just in dictionary form. No other text or word. 
                 
     Here are some Examples:

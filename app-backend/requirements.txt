@@ -6,7 +6,6 @@ python-multipart
 librosa
 soundfile
 noisereduce
-pydub
 sqlalchemy
 psycopg2-binary
 # google-cloud-speech

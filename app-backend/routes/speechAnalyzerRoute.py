@@ -13,7 +13,6 @@ from typing import Annotated, List, Optional
 import time
 
 
-
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
@@ -29,12 +28,6 @@ os.makedirs(DATASET_DIR, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-# Global Variables
-filename: str = ""
-fileExtension: str = ""
-fileDuration: str = ""
-creationTime: str = ""
-
 
 def get_db():
     db = SessionLocal()
@@ -47,117 +40,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 
-# Upload audio file ROUTE
-@router.post("/api/upload-and-analyze")
-async def upload_audio(db: db_dependency, InputfileName = Form(...)):
-        
-    global filename, fileExtension, file_duration, creationTime
-    filename = InputfileName
-    fileExtension = InputfileName.split(".")[-1]
-
-
-    print(" Analyzation Started")
-    creationTime, fileDuration, processedAudio = preprocessing_audio(filename)
-    print("Processed Audio")
-    
-    # transcript = transcribeAudio_whisperAPI(processedAudio, client)
-    # print("Transcripted")
-    
-    # transcript = transcribeAudio_googleAPI(processedAudio)
-    # print("Google-Transcripted")
-    
-    
-    transcript = transcribeAudio_whisperLocal(processedAudio)
-    print("Transcripted")
-    
-    
-    translated_transcript = transcriptEnchancer(transcript, client)
-    print("Roman Urdu Translator")
-    
-    diarized_Transcript = diarization_audio(translated_transcript, client)
-    print("Dialog-flowTranscript")  
-    
-    summary = summarize_Transcript_o1(transcript, client)
-    print("Summarized")
-    
-    sentiment = sentimentAnalysis(translated_transcript, client)
-    print("Sentiment")
-    
-    emotion = emotionAnalysis(translated_transcript, sentiment, client)
-    print("Emotion")
-    
-    topic = topicExtraction_o1(transcript, client, summary)
-    print("Topic / Query")
-    
-    category = categorizeText_o1(transcript, client)
-    print("Categorized")
-    
-
-    print("==== Storing Data in DB ====")
-    db_analysis = models.Speech_Analysis_Table(
-        filename = filename,
-        file_extension = fileExtension,
-        file_duration = fileDuration + " " + str(creationTime),
-        transcript = transcript,
-        summary = summary,
-        translated_transcript = translated_transcript,
-        diarized_transcript = diarized_Transcript,
-        sentiment = sentiment,
-        emotion = emotion,
-        topic = topic,
-        category = category
-    )
-    db.add(db_analysis)
-    db.commit()
-    db.refresh(db_analysis)
-    
-    return {"status": "success", "message": "File uploaded and analyzed successfully", "filename": filename}
-
-
-
-# Route to Fetch all Records from database
-@router.get("/api/all-records")
-async def get_all_data(db: db_dependency):
-    db_table = models.Speech_Analysis_Table
-    try:
-        data = db.query(db_table).all()
-        return data
-    except Exception as e:
-        return {"status": "Error Fetching Data (404)", "message": str(e)}
-
-
-# Route to Fetch Record by ID
-@router.get("/api/record-by-id/{id}")
-async def get_record_by_id(id: str, db: db_dependency):
-    id = int(id)
-    db_table = models.Speech_Analysis_Table
-    try:
-        data = db.query(db_table).filter(db_table.id == id).first()
-        if (data is None):
-            return {"status": "Error", "message": "Data not found"}
-        return data
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-
-
-
-
-# Route to delete Record by ID from Database.
-@router.delete("/api/delete-record-by-id/{id}")
-async def delete_record_by_id(id: int, db: db_dependency):
-    db_table = models.Speech_Analysis_Table
-    try:
-        data = db.query(db_table).filter(db_table.id == id).first()
-        db.delete(data)
-        db.commit()
-        db.refresh(db)
-        return {"status": "success", "message": "Data deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
-
-
-# ============= ZIP FOLDER UPLOAD ==============
+# ===== ZIP FOLDER UPLOAD =====
 @router.post("/api/upload-multiple-files")
 async def upload_zip( file: UploadFile = File(...)):
 
@@ -176,12 +59,11 @@ async def upload_zip( file: UploadFile = File(...)):
 
  
  
-#  ========= File Upload (MP3 WAV FLAC) ==========
+#  ===== File Upload (MP3 WAV FLAC) =====
 @router.post("/api/upload-audio")
 async def upload_audio(file: UploadFile = File(...)):
 
     file_location = os.path.join(DATASET_DIR, file.filename)
-    print("Hello")
     
     try:
         with open(file_location, "wb") as buffer:
@@ -190,3 +72,112 @@ async def upload_audio(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Failed to save file: {str(e)}")
     
     return {"fileNamesList": [file.filename]}
+
+
+
+
+# ===== Analyze audio file =====
+@router.post("/api/upload-and-analyze")
+async def upload_audio(db: db_dependency, InputfileName = Form(...)):
+        
+    filename = InputfileName
+    fileExtension = InputfileName.split(".")[-1]
+
+    print("Starting Analysis")
+    creationTime, fileDuration, processedAudio = preprocessing_audio(filename)
+    print("Processed Audio")
+    
+    # transcript = transcribeAudio_whisperAPI(processedAudio, client)
+    # print("Audio Transcripted")
+           
+    transcript = transcribeAudio_whisperLocal(processedAudio)
+    print("Audio Transcription (Done)")
+     
+    enhancedTranscript = transcriptEnchancer(transcript, client)
+    print("Transcription Enchanced (Done)")
+    
+    diarized_Transcript = diarization_audio(enhancedTranscript, client)
+    print("Dialog-flow of Transcript (Done)")  
+    
+    summary = summarize_Transcript(enhancedTranscript, client)
+    print("Summarized (Done)")
+    
+    sentiment = sentimentAnalysis(enhancedTranscript, client)
+    print("Sentiment (Done)")
+    
+    emotion = emotionAnalysis(enhancedTranscript, sentiment, client)
+    print("Emotion (Done)")
+    
+    topic = topicExtraction(enhancedTranscript, client, summary)
+    print("Topic / Query (Done)")
+    
+    category = categorizeText(enhancedTranscript, client)
+    print("Categorized (Done)")
+    
+
+    print("\nStoring results in Database \n")
+    db_analysis = models.Speech_Analysis_Table(
+        filename = filename,
+        file_extension = fileExtension,
+        file_duration = fileDuration + " " + str(creationTime),
+        transcript = transcript,
+        summary = summary,
+        translated_transcript = enhancedTranscript,
+        diarized_transcript = diarized_Transcript,
+        sentiment = sentiment,
+        emotion = emotion,
+        topic = topic,
+        category = category
+    )
+    db.add(db_analysis)
+    db.commit()
+    db.refresh(db_analysis)
+    
+    return {"status": "success", "message": "File analyzed and Saved successfully", "filename": filename}
+
+
+
+# ===== Fetch All Records ======
+@router.get("/api/all-records")
+async def get_all_records(db: db_dependency):
+    db_table = models.Speech_Analysis_Table
+    try:
+        data = db.query(db_table).all()
+        return data
+    except Exception as e:
+        return {"status": "Error Fetching Data (404)", "message": str(e)}
+
+
+# ===== Fetch Record by ID ======
+@router.get("/api/record-by-id/{id}")
+async def get_record_by_id(id: str, db: db_dependency):
+    id = int(id)
+    db_table = models.Speech_Analysis_Table
+    try:
+        data = db.query(db_table).filter(db_table.id == id).first()
+        if (data is None):
+            return {"status": "Error", "message": "Data not found"}
+        return data
+    except Exception as e:
+        return {"status": "Error", "message": str(e)}
+
+
+
+# ===== Delete Record by ID ======
+@router.delete("/api/delete-record-by-id/{id}")
+async def delete_record_by_id(id: int, db: db_dependency):
+    db_table = models.Speech_Analysis_Table
+    try:
+        data = db.query(db_table).filter(db_table.id == id).first()
+        if not data:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        db.delete(data)
+        db.commit()
+        return {"status": "success", "message": "Data deleted successfully"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+

@@ -9,6 +9,5 @@ noisereduce
 pydub
 sqlalchemy
 psycopg2-binary
-# tensorflow
-google-cloud-speech
-google-cloud-storage
+# google-cloud-speech
+# google-cloud-storage

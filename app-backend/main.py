@@ -18,5 +18,5 @@ app.include_router(speechAnalyzerRoute.router)
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to the Speech Analyzer API"}
+    return {"message": "Welcome to ABL mauwin Speech Analyzer API"}
 

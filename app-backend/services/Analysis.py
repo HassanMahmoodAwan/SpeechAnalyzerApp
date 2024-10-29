@@ -1,28 +1,27 @@
+import re
+import Prompts
+
 
 # Sentiment Analysis
 def sentimentAnalysis(transcript:str, client:any):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": """You are a sentiment analyzer model. Analyze the following text. Analyze it and provide me the sentiment which are: [ positive, negative, neutral ] with their percentage.  First with the highest percentage and then with the second highest percentage. Only provide the name and percentage of sentiment in a dictionary || JSON. No any other text or word. 
-             Here are some Examples, 
-             
-             Transcript: ایک کسٹمر اپنے کریڈٹ کارڈ کے بارے میں معلومات حاصل کر رہا تھا۔ بینک نمائندے نے دو طرح کے کریڈٹ کارڈز، گولڈ اور پلیٹینم کے بارے میں بتایا، جن میں فیس اور کم از کم تنخواہ کے تقاضے شامل ہیں۔ گولڈ کارڈ کی فیس 2500 روپے اور پلیٹینم کارڈ کی فیس 5000 روپے ہوتی ہے۔ کسٹمر کو بتایا گیا کہ پلیٹینم کارڈ کے لیے زیادہ فوائد ہیں اور اس کی حد زیادہ ہوتی ہے۔ نمائندے نے درخواست کے عمل اور تنخواہ کی ضروریات کو بھی واضح کیا۔
-             Sentiment: {'neutral':80, 'positive':15, 'negative':5}
-             
-             Transcript: The update caused a lot of bugs, and it's been frustrating. We lost a lot of time trying to fix the issues.
-             Sentiment: {'negative':85, 'neutral':15, 'positive':0}
-             
-             Transcript: I love the new features you added to the app! It's so much more user-friendly now, and my team is very happy
-             Sentiment: {'positive':90, 'neutral':10, 'negative':0}
-             
-             
-             Ensure the result dictionary should not have any other word like json, sentiment at the start of provided string, as I need to use it at frontend so format should be exact same. Thanks GPT"""},
+            {"role": "system", "content": Prompts.analysis_Sentiments},
             {"role": "user", "content": transcript}
             
         ]
     )
-    return str(response.choices[0].message.content)
+    
+    output = response.choices[0].message.content.strip()
+    output = re.sub(r"^Sentiment:\s*", "", output)
+
+    try:
+        json.loads(output)
+    except json.JSONDecodeError:
+        return '{"error": "Invalid response format"}'
+
+    return str(output)
 
 
 
@@ -72,7 +71,7 @@ def sentimentAnalysis_o1(transcript:str, client:any):
 
 
 # ======== Emotion Analysis ============
-def emotionAnalysis(transcript: str, client: any, sentiment: dict):
+def emotionAnalysis(transcript: str, sentiment, client: any):
 
     
     response = client.chat.completions.create(

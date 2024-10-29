@@ -4,40 +4,40 @@ import os
 import numpy as np
 import torch
 import whisper
+
+# ====== Google API Imports ========
 from google.cloud.speech_v2 import SpeechClient
 from google.api_core import client_options
 from google.cloud.speech_v2.types import cloud_speech
 from google.cloud import speech
 from google.cloud import storage 
 from google.auth import default
+# ==================================
 
 
 
 # # Global Variables
 DEVICE = "cuda" if torch.cuda.is_available()  else "mps" if torch.backends.mps.is_available()  else "cpu"
-print(DEVICE)
-
 MODEL = whisper.load_model("base", DEVICE)
 
-PROJECT_ID = "zeta-stacker-437604-e0"
-BUCKET_NAME = "speechanalyzerbucket" 
+# PROJECT_ID = "zeta-stacker-437604-e0"
+# BUCKET_NAME = "speechanalyzerbucket" 
 
 
-# Passing Audio to OpenAI Whisper API
-def transcribeAudio_whisperAPI(audio_filePath:str, client:any):
+#  ======== Whisper OpenAI API ==========
+def transcribeAudio_whisperAPI(audio_filePath:str, client:any) -> str:
     with open(audio_filePath, "rb") as audio_file:
         try:
             transcript= client.audio.transcriptions.create(model="whisper-1", file=audio_file)
-        except:
-            raise Exception("Error in Transcription")
+        except Exception as e:
+            raise Exception(f"Error while Performing Transcript:  {e}")
     
-    global transcript_audio
-    transcript_audio = transcript.text
     return  transcript.text
 
 
-# Local Whisper Model (large-v3)
-def transcribeAudio_whisperLocal(audio_filePath:str):
+
+# ======== Whisper Local Large =========
+def transcribeAudio_whisperLocal(audio_filePath:str) -> str:
     
     # result = model.transcribe(audio_filePath,
     #                       prompt="""Transcribe the following conversation between a customer and a company representative. The conversation might be in Urdu or English, you have to figure out. There will be some words related to banking or any complain, such as 'اے بی ایل', 'الائیڈ بینک', 'کریڈٹ کارڈ', 'بینک', 'برانچ', 'پن', 'savings', 'لمیٹ', 'ensure', 'پالیسی', 'واٹس ایپ', 'انفارمیشن', 'کریڈینشلز', 'منتھ', 'پلاٹینم', 'گولڈ', 'سکس', 'مینجر, 'Policy' and other banking-related words. Donot convert english words into urdu, Show them as it is. Please ensure accurate transcription of both Urdu and English words in context.""",
@@ -53,9 +53,9 @@ def transcribeAudio_whisperLocal(audio_filePath:str):
 
 
 # Google Cloud SPeech-to-Text API (V2)
-def transcribeAudio_googleAPI(local_file_path: str, bucket_name: str = BUCKET_NAME, destination_blob_name: str = "Test01.mp3"):
+def transcribeAudio_googleAPI(local_file_path: str, bucket_name: str = BUCKET_NAME, destination_blob_name: str = "Test.mp3"):
     credentials, project = default()
-    print(f"Using project {project} with credentials {credentials}")
+
     print(local_file_path)
     storage_client = storage.Client()
 
@@ -125,22 +125,6 @@ def transcriptEnchancer(orignal_transcript:str, client:any):
         ]
     )
     return str(response.choices[0].message.content)
-
-
-
-
-#  ==== Translated Transcript in English ====
-def englishTranslator(orignal_transcript:str, client:any):
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a English translator. Translate the following Language text to English. First find which Language or languages used in the text, and only return the Translated text, also make correction of any spelling mistakes.  Donot tell in which language it is."},
-            
-            {"role": "user", "content": orignal_transcript}
-        ]
-    )
-    return str(response.choices[0].message.content)
-
 
 
 

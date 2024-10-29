@@ -83,7 +83,7 @@ async def upload_audio(db: db_dependency, InputfileName = Form(...)):
     sentiment = sentimentAnalysis(translated_transcript, client)
     print("Sentiment")
     
-    emotion = emotionAnalysis(translated_transcript, client, sentiment)
+    emotion = emotionAnalysis(translated_transcript, sentiment, client)
     print("Emotion")
     
     topic = topicExtraction_o1(transcript, client, summary)

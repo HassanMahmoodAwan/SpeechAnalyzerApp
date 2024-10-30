@@ -41,7 +41,7 @@ def emotionAnalysis(transcript: str, sentiment, client: any):
 # Topic Extraction
 def topicExtraction(transcript:str, client:any, summary):
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": Prompts.analysis_Topic},
             {"role": "user", "content": transcript}
@@ -54,7 +54,7 @@ def topicExtraction(transcript:str, client:any, summary):
 # Categorize the Text
 def categorizeText(transcript:str, client:any):
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": Prompts.analysis_Category},
             {"role": "user", "content": transcript}

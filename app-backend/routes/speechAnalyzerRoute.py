@@ -93,22 +93,29 @@ async def upload_audio(db: db_dependency, InputfileName = Form(...)):
     transcript = transcribeAudio_whisperLocal(processedAudio)
     print("Audio Transcription (Done)")
      
-    enhancedTranscript = transcriptEnchancer(transcript, client)
+    # enhancedTranscript = transcriptEnchancer(transcript, client)
+    enhancedTranscript = transcript
     print("Transcription Enchanced (Done)")
     
-    diarized_Transcript = diarization_audio(enhancedTranscript, client)
+    # diarized_Transcript = diarization_audio(enhancedTranscript, client)
+    diarized_Transcript = ""
     print("Dialog-flow of Transcript (Done)")  
     
-    summary = summarize_Transcript(enhancedTranscript, client)
+    # summary = summarize_Transcript(enhancedTranscript, client)
+    summary = ""
     print("Summarized (Done)")
     
-    sentiment = sentimentAnalysis(enhancedTranscript, client)
+    sentiment = analysis_Sentiments_Emotions(enhancedTranscript, client)
+    # sentiment = sentimentAnalysis(enhancedTranscript, client)
     print("Sentiment (Done)")
     
-    emotion = emotionAnalysis(enhancedTranscript, sentiment, client)
+    emotion = sentiment
+    # emotion = emotionAnalysis(enhancedTranscript, sentiment, client)
     print("Emotion (Done)")
     
-    topic = topicExtraction(enhancedTranscript, client, summary)
+    # topic = topicExtraction(enhancedTranscript, client, summary)
+    topic = processing_Summary_Topic(transcript, client)
+    summary = topic
     print("Topic / Query (Done)")
     
     category = categorizeText(enhancedTranscript, client)

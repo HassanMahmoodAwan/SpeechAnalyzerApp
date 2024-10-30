@@ -79,3 +79,80 @@ analysis_Topic= "You need to find the topic of the following text. Extract the t
 
 analysis_Category = "You are a text categorizer. Categorize the following text. Categorize it and provide me the category. The category can be one of the following: [ Business, Education, Entertainment, Family, Friends, Health, Love, Politics, Religion, Science, Sports, Technology, Travel, Other, Complain, Query,Information, Customer Support, Finance, News, Relationship, Self-Improvement, Technology, Work ]. You can give me one to three categories. keep in mind no extra text. "
 
+
+
+analysis_Sentiment_Emotion = """You are an advanced sentiment and emotion analyzer model. Analyze the following text and provide both the **sentiment** and **emotion** results.
+
+1. **Sentiment Analysis**: Identify the sentiment [positive, negative, neutral] along with their percentages. Provide the highest percentage first, followed by the second highest. Only output the sentiment names and percentages in JSON format.
+
+2. **Emotion Analysis**: Identify the primary emotions from the following list: [happy, sad, angry, fear, surprise, neutral, frustrated]. Include the top three emotions with their percentages. Ensure the names and percentages are in JSON format.
+
+Examples:
+
+    Transcript: The update caused a lot of bugs, and it's been frustrating.  
+    Output: 
+    {
+        "sentiment": {"negative": 85, "neutral": 15, "positive": 0},
+        "emotion": {"frustrated": 80, "angry": 15, "neutral": 5}
+    }
+
+    Transcript: ایک کسٹمر اپنے کریڈٹ کارڈ کے بارے میں معلومات حاصل کر رہا تھا۔ بینک نمائندے نے دو طرح کے کریڈٹ کارڈز، گولڈ اور پلیٹینم کے بارے میں بتایا۔  
+    Output:
+    {
+        "sentiment": {"neutral": 80, "positive": 15, "negative": 5},
+        "emotion": {"neutral": 70, "happy": 20, "surprise": 10}
+    }
+
+    Transcript: I love the new features you added to the app!  
+    Output:
+    {
+        "sentiment": {"positive": 90, "neutral": 10, "negative": 0},
+        "emotion": {"joy": 85, "happy": 15, "neutral": 0}
+    }
+
+Please ensure that the response strictly follows this JSON format:
+{
+    "sentiment": {"positive": 60, "neutral": 30, "negative": 10},
+    "emotion": {"happy": 50, "neutral": 30, "surprise": 20}
+}
+"""
+
+
+
+summary_topic = """
+You are a transcript summarizer and topic extractor. Your job is to:  
+
+1. **Summarize the Transcript:** Provide a detailed summary of the transcript in the **same language** as the input. Correct any spelling mistakes. The summary should be **comprehensive** and cover all key points in **5-7 sentences**, capturing the full context of the conversation. Avoid using the word 'summary' in the output.  
+
+2. **Extract the Topic:** Identify the main topic discussed in the transcript in **15-20 words or less**. The topic must also be in the **same language** as the input.  
+
+Below are examples of different transcripts and their corresponding outputs:  
+
+---
+
+### **Example 1**  
+**Transcript:**  
+"Islam alaikum Malar Furman kun se main Nimal baat kar rahi hoon. Lahore se meri salary ABL account mein hoti hai, aur mujhe ABL ke credit cards ke options ke baare mein poochhna tha. Mujhe salary aur business credit cards ke eligibility, annual fee, aur spending criteria ke differences ke baare mein detail mein bataya gaya. Representative ne mujhe Gold aur Platinum cards ka comparison bhi diya, aur fees reversal ka process explain kiya. Representative ne kaha agar main 90 dinon mein specific spending karoon to annual fees reverse ho sakti hai. Representative ne credit card apply karne ka process bhi explain kiya, aur bataya ke WhatsApp ya branch ke zariye request submit ki ja sakti hai....."
+
+**Output:**  
+```json
+{
+    "summary": "Nimal ne Lahore branch se ABL ke credit cards par tafseelat hasil ki. Representative ne Gold aur Platinum cards ki eligibility aur spending requirements par discussion ki, aur annual fees reversal ka process explain kiya. Representative ne salary aur business cards ke differences ko highlight kiya. Nimal ne application submission process ke options aur documentation par bhi poocha. Representative ne request branch, WhatsApp, ya helpline ke zariye submit karne ka zikr kiya.",
+    "topic": "Credit card eligibility, comparison, and application process"
+}
+
+
+
+Example 2:  
+    Transcript:  
+    "While addressing a customer complaint, the representative verified order details and discussed troubleshooting steps for a malfunctioning device. The customer expressed frustration about missing accessories, but the representative explained the policy and suggested a solution....."
+
+    Output:  
+    {
+        "summary": "A representative assisted a customer with troubleshooting a faulty device and explained the policy for missing accessories. Despite the customer’s frustration, the representative provided helpful solutions and discussed the replacement process.",
+        "topic": "Customer support and troubleshooting"
+    }
+    
+    
+NOte: Output should be in JSON format, strickly follow that.
+"""

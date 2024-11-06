@@ -13,6 +13,7 @@ def sentimentAnalysis(transcript:str, client:any):
     )   
     output = response.choices[0].message.content.strip()
     output = re.sub(r"^Sentiment:\s*", "", output)
+    output = output.strip("```\njson```").strip()
 
     return str(output)
 

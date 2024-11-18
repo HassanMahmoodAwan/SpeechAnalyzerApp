@@ -39,11 +39,14 @@ def transcribeAudio_whisperAPI(audio_filePath:str, client:any) -> str:
 # ======== Whisper Local Large =========
 def transcribeAudio_whisperLocal(audio_filePath:str, fileName:str) -> str:
     
-    # result = model.transcribe(audio_filePath,
-    #                       prompt= Prompts.transcript_WhisperLocal,
+    # result = model.transcribe(file_path,
+    #                       prompt=Prompts.transcript_WhisperLocal,
     #                       temperature=0.2,       
-    #                       beam_size=8,
-    #                       )
+    #                       beam_size=5,
+    #                       compression_ratio_threshold=1.5,  # Stricter on verbose segments
+    #                       logprob_threshold=-0.5,            # More strict on low-confidence segments
+    #                       condition_on_previous_text=False 
+    #                       ) 
     
     
     

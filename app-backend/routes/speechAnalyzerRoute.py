@@ -88,59 +88,59 @@ async def upload_audio(db: db_dependency, InputfileName = Form(...)):
     print("Processed Audio")
     print(processedAudio)
     
-    testingResult = processing_RealtimeAPI(processedAudio, client)
-    print(testingResult)
+    # testingResult = processing_RealtimeAPI(processedAudio, client)
+    # print(testingResult)
     
     # transcript = transcribeAudio_whisperAPI(processedAudio, client)
     # print("Audio Transcripted")
            
-    # transcript = transcribeAudio_whisperLocal(processedAudio, filename)
-    # print("Audio Transcription (Done)")
+    transcript = transcribeAudio_whisperLocal(processedAudio, filename)
+    print("Audio Transcription (Done)")
      
-    # enhancedTranscript = transcriptEnchancer(transcript, client)
-    # print("Transcription Enchanced (Done)")
+    enhancedTranscript = transcriptEnchancer(transcript, client)
+    print("Transcription Enchanced (Done)")
     
-    # diarized_Transcript = diarization_audio(enhancedTranscript, client)
-    # # diarized_Transcript = ""
-    # print("Dialog-flow of Transcript (Done)")  
+    diarized_Transcript = diarization_audio(enhancedTranscript, client)
+    # diarized_Transcript = ""
+    print("Dialog-flow of Transcript (Done)")  
     
     # summary = summarize_Transcript(enhancedTranscript, client)
     # print("Summarized (Done)")
     
-    # sentiment, emotion = analysis_Sentiments_Emotions(enhancedTranscript, client)
-    # print("Sentiment, Emotion (Done)")
+    sentiment, emotion = analysis_Sentiments_Emotions(enhancedTranscript, client)
+    print("Sentiment, Emotion (Done)")
     # sentiment = sentimentAnalysis(enhancedTranscript, client)
     # print("Sentiment (Done)")
     
     # emotion = sentiment
     # emotion = emotionAnalysis(enhancedTranscript, sentiment, client)
-    # print("Emotion (Done)")
+    print("Emotion (Done)")
     
     # topic = topicExtraction(enhancedTranscript, client, summary)
-    # summary, topic = processing_Summary_Topic(enhancedTranscript, client)
-    # print("Topic/Query & Summary (Done)")
+    summary, topic = processing_Summary_Topic(transcript, client)
+    print("Topic/Query & Summary (Done)")
     
-    # category = categorizeText(enhancedTranscript, client)
-    # print("Categorized (Done)")
+    category = categorizeText(enhancedTranscript, client)
+    print("Categorized (Done)")
     
 
-    # print("\nStoring results in Database \n")
-    # db_analysis = models.Speech_Analysis_Table(
-    #     filename = filename,
-    #     file_extension = fileExtension,
-    #     file_duration = fileDuration + " " + str(creationTime),
-    #     transcript = transcript,
-    #     summary = summary,
-    #     translated_transcript = enhancedTranscript,
-    #     diarized_transcript = diarized_Transcript,
-    #     sentiment = sentiment,
-    #     emotion = emotion,
-    #     topic = topic,
-    #     category = category
-    # )
-    # db.add(db_analysis)
-    # db.commit()
-    # db.refresh(db_analysis)
+    print("\nStoring results in Database \n")
+    db_analysis = models.Speech_Analysis_Table(
+        filename = filename,
+        file_extension = fileExtension,
+        file_duration = fileDuration + " " + str(creationTime),
+        transcript = transcript,
+        summary = summary,
+        translated_transcript = enhancedTranscript,
+        diarized_transcript = diarized_Transcript,
+        sentiment = sentiment,
+        emotion = emotion,
+        topic = topic,
+        category = category
+    )
+    db.add(db_analysis)
+    db.commit()
+    db.refresh(db_analysis)
     
     return {"status": "success", "message": "File analyzed and Saved successfully", "filename": filename}
 
